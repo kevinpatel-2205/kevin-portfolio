@@ -7,12 +7,12 @@ export const personalInfo = {
   title: "Full Stack Developer",
   tagline: "Crafting Digital Experiences with Passion & Precision",
   about:
-    "I'm a passionate Full Stack Developer from Surat, India. I love building beautiful, performant web applications that solve real-world problems. With a deep appreciation for both art and technology, I bring a creative eye and technical rigor to every project I undertake.",
+    "I'm a passionate Full Stack Developer from Ahmedabad, India. I love building beautiful, performant web applications that solve real-world problems. With a deep appreciation for both art and technology, I bring a creative eye and technical rigor to every project I undertake.",
   profileImage: "",
   resumeUrl: "/resume.pdf",
-  email: "kevin@example.com",
-  phone: "+91 98765 43210",
-  location: "Surat, Gujarat, India",
+  email: "kevinpatel37592@gmail.com",
+  phone: "+91 78628 78931",
+  location: "Ahmedabad, Gujarat, India",
 };
 
 export const socialLinks = [

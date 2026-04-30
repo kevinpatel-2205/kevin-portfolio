@@ -5,31 +5,53 @@ import { useTheme } from "../../context/ThemeContext";
 import { personalInfo } from "../../data/portfolioData";
 
 const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Education", href: "#education" },
-  { label: "Experience", href: "#experience" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "home" },
+  { label: "About", href: "about" },
+  { label: "Skills", href: "skills" },
+  { label: "Projects", href: "projects" },
+  { label: "Education", href: "education" },
+  { label: "Experience", href: "experience" },
+  { label: "Contact", href: "contact" },
 ];
 
 const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [active, setActive] = useState("#home");
+  const [active, setActive] = useState("home");
 
+  // ── Scroll spy ──
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      // Navbar glass effect
+      setScrolled(window.scrollY > 50);
+
+      // Find which section is currently in view
+      const offsets = navLinks
+        .map(({ href }) => {
+          const el = document.getElementById(href);
+          if (!el) return { id: href, top: Infinity };
+          return {
+            id: href,
+            top: Math.abs(el.getBoundingClientRect().top - 80),
+          };
+        })
+        .sort((a, b) => a.top - b.top);
+
+      if (offsets.length > 0) {
+        setActive(offsets[0].id);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // run once on mount
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleNav = (href) => {
-    setActive(href);
     setMenuOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    const el = document.getElementById(href);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   const gold = "#C9A84C";
@@ -70,7 +92,7 @@ const Navbar = () => {
           {/* Logo */}
           <motion.div
             whileHover={{ scale: 1.03 }}
-            onClick={() => handleNav("#home")}
+            onClick={() => handleNav("home")}
             style={{
               cursor: "pointer",
               display: "flex",
@@ -78,7 +100,6 @@ const Navbar = () => {
               gap: "12px",
             }}
           >
-            {/* Heritage emblem */}
             <div
               style={{
                 width: "40px",
@@ -102,7 +123,7 @@ const Navbar = () => {
                   x="20"
                   y="24"
                   textAnchor="middle"
-                  fontFamily="Playfair Display, Georgia, serif"
+                  fontFamily="'Playfair Display', Georgia, serif"
                   fontSize="10"
                   fontWeight="700"
                   fill={gold}
@@ -140,59 +161,64 @@ const Navbar = () => {
             </div>
           </motion.div>
 
-          {/* Desktop Links */}
+          {/* Desktop nav links */}
           <div
             className="nav-desktop"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1.8rem",
-            }}
+            style={{ display: "flex", alignItems: "center", gap: "1.8rem" }}
           >
-            {navLinks.map((link) => (
-              <motion.button
-                key={link.href}
-                onClick={() => handleNav(link.href)}
-                whileHover={{ y: -1 }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "'Crimson Text', Georgia, serif",
-                  fontSize: "1rem",
-                  fontWeight: active === link.href ? "600" : "400",
-                  color:
-                    active === link.href
+            {navLinks.map((link) => {
+              const isActive = active === link.href;
+              return (
+                <motion.button
+                  key={link.href}
+                  onClick={() => handleNav(link.href)}
+                  whileHover={{ y: -1 }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "'Crimson Text', Georgia, serif",
+                    fontSize: "1rem",
+                    fontWeight: isActive ? "600" : "400",
+                    color: isActive
                       ? gold
                       : isDark
-                        ? "rgba(210,195,160,0.75)"
-                        : "rgba(80,60,20,0.75)",
-                  position: "relative",
-                  padding: "4px 0",
-                  letterSpacing: "0.5px",
-                  transition: "color 0.3s",
-                }}
-              >
-                {link.label}
-                {active === link.href && (
-                  <motion.div
-                    layoutId="activeLink"
-                    style={{
-                      position: "absolute",
-                      bottom: "-2px",
-                      left: 0,
-                      right: 0,
-                      height: "1px",
-                      background: gold,
-                    }}
-                  />
-                )}
-              </motion.button>
-            ))}
+                        ? "rgba(210,195,160,0.7)"
+                        : "rgba(80,60,20,0.7)",
+                    position: "relative",
+                    padding: "4px 0",
+                    letterSpacing: "0.5px",
+                    transition: "color 0.3s",
+                  }}
+                >
+                  {link.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeLink"
+                      style={{
+                        position: "absolute",
+                        bottom: "-2px",
+                        left: 0,
+                        right: 0,
+                        height: "1px",
+                        background: gold,
+                        borderRadius: "1px",
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 30,
+                      }}
+                    />
+                  )}
+                </motion.button>
+              );
+            })}
           </div>
 
           {/* Controls */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+            {/* Theme toggle */}
             <motion.button
               whileHover={{ scale: 1.1, rotate: 20 }}
               whileTap={{ scale: 0.9 }}
@@ -215,6 +241,7 @@ const Navbar = () => {
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </motion.button>
 
+            {/* Hamburger */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -284,6 +311,7 @@ const Navbar = () => {
                   textAlign: "left",
                   padding: "8px 0",
                   borderBottom: `1px solid rgba(201,168,76,0.1)`,
+                  fontWeight: active === link.href ? "700" : "400",
                 }}
               >
                 {link.label}

@@ -3,6 +3,10 @@ import Navbar from "./components/layout/Navbar";
 import Hero from "./components/sections/Hero";
 import About from "./components/sections/About";
 import Skills from "./components/sections/Skills";
+import Projects from "./components/sections/Projects";
+import Education from "./components/sections/Education";
+import Experience from "./components/sections/Experience";
+import Contact from "./components/sections/Contact";
 
 const AppContent = () => {
   const { isDark } = useTheme();
@@ -18,24 +22,10 @@ const AppContent = () => {
       <Hero />
       <About />
       <Skills />
-      {["projects", "education", "experience", "contact"].map((id) => (
-        <section
-          key={id}
-          id={id}
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "2rem",
-            fontFamily: "Georgia, serif",
-            color: isDark ? "rgba(201,168,76,0.08)" : "rgba(139,105,20,0.06)",
-            textTransform: "capitalize",
-          }}
-        >
-          {id}
-        </section>
-      ))}
+      <Projects />
+      <Education />
+      <Experience />
+      <Contact />
     </div>
   );
 };
